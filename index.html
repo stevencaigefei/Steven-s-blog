@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人博客</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #e1e1e1;
+            background-color: #1a1a1a;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            padding-right: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            padding-left: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.7rem 1.5rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        nav a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        nav a i {
+            margin-right: 8px;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .blog-posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .post {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .post h2 {
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 1rem;
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .excerpt {
+            color: #b0b0b0;
+            margin-bottom: 1.5rem;
+        }
+
+        .read-more {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .read-more:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+        }
+
+        .image-carousel {
+            margin: 3rem 0;
+            background: #2c2c2c;
+            padding: 2rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+
+        .carousel-track {
+            position: relative;
+            height: 500px;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(44, 44, 44, 0.8);
+            color: #fff;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .carousel-button:hover {
+            background: #3498db;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-button.prev {
+            left: 20px;
+        }
+
+        .carousel-button.next {
+            right: 20px;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        footer {
+            background: #1a1a1a;
+            color: #e1e1e1;
+            padding: 3rem 0 1rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid #2c2c2c;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #3498db;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section p {
+            line-height: 1.6;
+            color: #b0b0b0;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul a {
+            color: #b0b0b0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+        .footer-section ul a:hover {
+            color: #3498db;
+            background: rgba(52, 152, 219, 0.1);
+            transform: translateX(5px);
+        }
+
+        .footer-section ul a i {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2c2c2c;
+            border-radius: 50%;
+            color: #e1e1e1;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: #3498db;
+            transform: translateY(-3px);
+            color: white;
+        }
+
+        .social-icon i {
+            font-size: 1.2rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #2c2c2c;
+            color: #808080;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1.5rem;
+            }
+
+            nav a {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+            }
+
+            .blog-posts {
+                grid-template-columns: 1fr;
+            }
+
+            .carousel-track {
+                height: 300px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .social-icons {
+                justify-content: center;
+            }
+
+            .footer-section {
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#home"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="#about" class="about-link"><i class="fas fa-user"></i> 关于我</a></li>
+                <li><a href="#contact" class="contact-link"><i class="fas fa-envelope"></i> 联系方式</a></li>
+            </ul>
+            <h1>我的博客</h1>
+        </nav>
+    </header>
+
+    <main>
+        <section class="blog-posts">
+            <article class="post">
+                <h2>探索人工智能的未来</h2>
+                <div class="post-meta">
+                    <span class="date"><i class="far fa-calendar"></i> 2024-03-20</span>
+                    <span class="author"><i class="far fa-user"></i> 作者：我</span>
+                </div>
+                <p class="excerpt">
+                    人工智能正在改变我们的生活方式。从自动驾驶汽车到智能家居，AI技术的应用范围越来越广...
+                </p>
+                <a href="#article1" class="read-more">阅读更多</a>
+            </article>
+
+            <article class="post">
+                <h2>Web开发趋势2024</h2>
+                <div class="post-meta">
+                    <span class="date"><i class="far fa-calendar"></i> 2024-03-19</span>
+                    <span class="author"><i class="far fa-user"></i> 作者：我</span>
+                </div>
+                <p class="excerpt">
+                    随着技术的不断发展，Web开发领域也在持续演变。本文将探讨2024年最热门的Web开发趋势...
+                </p>
+                <a href="#article2" class="read-more">阅读更多</a>
+            </article>
+
+            <article class="post">
+                <h2>程序员的自我提升之路</h2>
+                <div class="post-meta">
+                    <span class="date"><i class="far fa-calendar"></i> 2024-03-18</span>
+                    <span class="author"><i class="far fa-user"></i> 作者：我</span>
+                </div>
+                <p class="excerpt">
+                    在快速发展的技术领域，持续学习和自我提升是每个程序员的必修课。本文分享一些实用的学习方法...
+                </p>
+                <a href="#article3" class="read-more">阅读更多</a>
+            </article>
+        </section>
+
+        <section class="image-carousel">
+            <div class="carousel-container">
+                <div class="carousel-track">
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1000&auto=format&fit=crop" alt="编程代码" style="object-fit: cover;">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1000&auto=format&fit=crop" alt="笔记本电脑" style="object-fit: cover;">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=1000&auto=format&fit=crop" alt="技术工作" style="object-fit: cover;">
+                    </div>
+                </div>
+                <button class="carousel-button prev" aria-label="上一张"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-button next" aria-label="下一张"><i class="fas fa-chevron-right"></i></button>
+                <div class="carousel-dots">
+                    <button class="dot active" data-index="0"></button>
+                    <button class="dot" data-index="1"></button>
+                    <button class="dot" data-index="2"></button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>关于本站</h3>
+                <p>这是一个分享技术、知识和经验的个人博客平台。欢迎关注我的社交媒体账号，获取更多资讯。</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>快速链接</h3>
+                <ul>
+                    <li><a href="#home" class="footer-nav-link">
+                        <i class="fas fa-home"></i> 首页
+                    </a></li>
+                    <li><a href="#about" class="footer-nav-link about-link">
+                        <i class="fas fa-user"></i> 关于我
+                    </a></li>
+                    <li><a href="#contact" class="footer-nav-link contact-link">
+                        <i class="fas fa-envelope"></i> 联系方式
+                    </a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>社交媒体</h3>
+                <div class="social-icons">
+                    <a href="#" class="social-icon" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-icon" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="social-icon" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="mailto:stevencaigefei@gmail.com" class="social-icon" title="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 蔡格非的个人博客 | All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const track = document.querySelector('.carousel-track');
+            const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+            const nextButton = document.querySelector('.carousel-button.next');
+            const prevButton = document.querySelector('.carousel-button.prev');
+            const dotsNav = document.querySelector('.carousel-dots');
+            const dots = Array.from(dotsNav.children);
+
+            let currentSlide = 0;
+
+            function updateSlides(index) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                slides[index].classList.add('active');
+                dots[index].classList.add('active');
+                currentSlide = index;
+            }
+
+            nextButton.addEventListener('click', () => {
+                currentSlide = (currentSlide + 1) % slides.length;
+                updateSlides(currentSlide);
+            });
+
+            prevButton.addEventListener('click', () => {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                updateSlides(currentSlide);
+            });
+
+            dotsNav.addEventListener('click', e => {
+                const dot = e.target.closest('button');
+                if (!dot) return;
+                
+                const slideIndex = parseInt(dot.dataset.index);
+                updateSlides(slideIndex);
+            });
+
+            // 自动播放
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % slides.length;
+                updateSlides(currentSlide);
+            }, 5000);
+
+            // 确保第一张图片显示
+            slides[0].classList.add('active');
+
+            // 添加图片加载错误处理
+            slides.forEach((slide, index) => {
+                const img = slide.querySelector('img');
+                img.addEventListener('error', () => {
+                    console.log(`图片${index + 1}加载失败`);
+                    img.alt = '图片加载失败';
+                });
+            });
+
+            // 文章内容数据
+            const articles = {
+                'article1': {
+                    title: '探索人工智能的未来',
+                    date: '2024-03-20',
+                    content: `
+                        <p>人工智能正在以前所未有的速度改变着我们的生活方式。从日常生活到专业领域，AI的影响无处不在。本文将深入探讨AI技术的现状和未来发展趋势。</p>
+
+                        <h2>人工智能的现状</h2>
+                        <p>目前，AI技术已经在多个领域取得了显著成果：</p>
+                        <ul>
+                            <li>自动驾驶技术的快速发展</li>
+                            <li>智能家居系统的普及</li>
+                            <li>医疗诊断的辅助决策</li>
+                            <li>自然语言处理的突破</li>
+                        </ul>
+
+                        <h2>未来展望</h2>
+                        <p>在未来几年，我们可能会看到：</p>
+                        <ul>
+                            <li>更智能的个人助理</li>
+                            <li>更精准的医疗诊断</li>
+                            <li>更安全的自动驾驶系统</li>
+                            <li>更高效的能源管理</li>
+                        </ul>
+
+                        <h2>AI的社会影响</h2>
+                        <p>AI技术的发展将带来深远的社会影响：</p>
+                        <ul>
+                            <li>就业市场的重构</li>
+                            <li>教育方式的革新</li>
+                            <li>社会交往的变革</li>
+                            <li>伦理问题的挑战</li>
+                        </ul>
+
+                        <p>作为技术从业者，我们需要积极应对这些挑战，确保AI技术的发展既能促进社会进步，又能保护人类的基本权益。</p>
+                    `
+                },
+                'article2': {
+                    title: 'Web开发趋势2024',
+                    date: '2024-03-19',
+                    content: `
+                        <p>2024年，Web开发领域正在经历一场技术革新。让我们深入了解当前最重要的趋势。</p>
+
+                        <h2>1. AI驱动的开发</h2>
+                        <p>人工智能正在改变开发流程：</p>
+                        <ul>
+                            <li>AI辅助编码和代码生成</li>
+                            <li>智能测试和调试工具</li>
+                            <li>自动化部署和维护</li>
+                        </ul>
+
+                        <h2>2. Web3和区块链</h2>
+                        <p>去中心化技术继续发展：</p>
+                        <ul>
+                            <li>智能合约应用</li>
+                            <li>去中心化存储</li>
+                            <li>加密货币支付集成</li>
+                        </ul>
+
+                        <h2>3. 性能优化</h2>
+                        <p>用户体验至关重要：</p>
+                        <ul>
+                            <li>Core Web Vitals优化</li>
+                            <li>渐进式Web应用（PWA）</li>
+                            <li>边缘计算应用</li>
+                        </ul>
+
+                        <h2>4. 安全性提升</h2>
+                        <p>网络安全变得更加重要：</p>
+                        <ul>
+                            <li>零信任安全架构</li>
+                            <li>API安全性增强</li>
+                            <li>隐私保护升级</li>
+                        </ul>
+                    `
+                },
+                'article3': {
+                    title: '程序员的自我提升之路',
+                    date: '2024-03-18',
+                    content: `
+                        <p>在技术快速迭代的今天，程序员的自我提升变得尤为重要。本文将分享一些实用的学习方法和经验。</p>
+
+                        <h2>建立学习体系</h2>
+                        <p>高效学习的关键要素：</p>
+                        <ul>
+                            <li>确定学习目标</li>
+                            <li>制定学习计划</li>
+                            <li>建立知识体系</li>
+                            <li>坚持复习和实践</li>
+                        </ul>
+
+                        <h2>技术栈拓展</h2>
+                        <p>如何选择学习方向：</p>
+                        <ul>
+                            <li>掌握核心技术</li>
+                            <li>关注技术趋势</li>
+                            <li>实践项目驱动</li>
+                            <li>参与开源项目</li>
+                        </ul>
+
+                        <h2>软技能提升</h2>
+                        <p>除了技术能力，还需要提升：</p>
+                        <ul>
+                            <li>沟通协作能力</li>
+                            <li>项目管理能力</li>
+                            <li>问题解决能力</li>
+                            <li>时间管理能力</li>
+                        </ul>
+
+                        <h2>职业发展</h2>
+                        <p>规划职业路径：</p>
+                        <ul>
+                            <li>技术专家路线</li>
+                            <li>管理岗位发展</li>
+                            <li>创业可能性</li>
+                            <li>持续学习重要性</li>
+                        </ul>
+                    `
+                },
+                'about': {
+                    title: '关于我',
+                    content: `
+                        <div style="padding: 1rem;">
+                            <div class="about-section">
+                                <h2 style="color: #3498db; margin-bottom: 1.5rem;">个人简介</h2>
+                                <p style="line-height: 1.8; margin-bottom: 2rem;">
+                                    你好！我是蔡格非，一名充满热情的软件开发者。我专注于网络安全和系统开发，致力于创建安全可靠的技术解决方案。
+                                </p>
+                            </div>
+
+                            <div class="about-section">
+                                <h2 style="color: #3498db; margin-bottom: 1.5rem;">教育背景</h2>
+                                <ul style="list-style: none; margin-bottom: 2rem;">
+                                    <li style="margin-bottom: 1rem; padding: 1rem; background: rgba(52, 152, 219, 0.1); border-radius: 10px;">
+                                        <i class="fas fa-graduation-cap" style="color: #3498db; margin-right: 10px;"></i>
+                                        <strong>奥克兰理工大学 (AUT)</strong>
+                                        <div style="margin-left: 28px; margin-top: 0.5rem; color: #b0b0b0;">
+                                            <p>学位：BCIS (Bachelor of Computer and Information Sciences)</p>
+                                            <p>主修：Networking and Security</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="about-section">
+                                <h2 style="color: #3498db; margin-bottom: 1.5rem;">专业技能</h2>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                                    <div class="skill-card" style="background: rgba(52, 152, 219, 0.1); padding: 1rem; border-radius: 10px;">
+                                        <h3 style="color: #3498db; margin-bottom: 0.5rem;">网络安全</h3>
+                                        <ul style="list-style: none;">
+                                            <li><i class="fas fa-shield-alt" style="color: #3498db; margin-right: 8px;"></i>网络安全分析</li>
+                                            <li><i class="fas fa-lock" style="color: #3498db; margin-right: 8px;"></i>安全系统设计</li>
+                                            <li><i class="fas fa-server" style="color: #3498db; margin-right: 8px;"></i>网络架构</li>
+                                        </ul>
+                                    </div>
+                                    <div class="skill-card" style="background: rgba(52, 152, 219, 0.1); padding: 1rem; border-radius: 10px;">
+                                        <h3 style="color: #3498db; margin-bottom: 0.5rem;">开发技能</h3>
+                                        <ul style="list-style: none;">
+                                            <li><i class="fas fa-code" style="color: #3498db; margin-right: 8px;"></i>系统开发</li>
+                                            <li><i class="fas fa-database" style="color: #3498db; margin-right: 8px;"></i>数据库管理</li>
+                                            <li><i class="fas fa-network-wired" style="color: #3498db; margin-right: 8px;"></i>网络编程</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="about-section">
+                                <h2 style="color: #3498db; margin-bottom: 1.5rem;">专业方向</h2>
+                                <ul style="list-style: none; margin-bottom: 2rem;">
+                                    <li style="margin-bottom: 0.5rem;">
+                                        <i class="fas fa-shield-alt" style="color: #3498db; margin-right: 10px;"></i>
+                                        网络安全解决方案设计
+                                    </li>
+                                    <li style="margin-bottom: 0.5rem;">
+                                        <i class="fas fa-network-wired" style="color: #3498db; margin-right: 10px;"></i>
+                                        网络系统架构
+                                    </li>
+                                    <li style="margin-bottom: 0.5rem;">
+                                        <i class="fas fa-code" style="color: #3498db; margin-right: 10px;"></i>
+                                        安全系统开发
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="about-section">
+                                <h2 style="color: #3498db; margin-bottom: 1.5rem;">个人愿景</h2>
+                                <p style="line-height: 1.8; margin-bottom: 2rem;">
+                                    作为一名网络安全专业的开发者，我致力于创建更安全的网络环境。我相信通过不断学习和实践，可以为数字世界的安全做出贡献。
+                                </p>
+                            </div>
+
+                            <div class="about-section" style="background: rgba(52, 152, 219, 0.1); padding: 2rem; border-radius: 10px; text-align: center;">
+                                <p style="font-style: italic; color: #b0b0b0;">
+                                    "安全不是产品，而是过程。"
+                                </p>
+                            </div>
+                        </div>
+                    `
+                },
+                'contact': {
+                    title: '联系方式',
+                    content: `
+                        <div style="text-align: center; padding: 2rem;">
+                            <h2 style="color: #3498db; margin-bottom: 2rem;">与我联系</h2>
+                            
+                            <div style="font-size: 1.2rem; line-height: 2;">
+                                <div style="background: rgba(52, 152, 219, 0.1); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+                                    <p style="margin-bottom: 1.5rem;">
+                                        <i class="fas fa-envelope" style="color: #3498db; margin-right: 10px;"></i>
+                                        邮箱：
+                                        <a href="mailto:stevencaigefei@gmail.com" 
+                                           style="color: #3498db; text-decoration: none; font-weight: bold;">
+                                            stevencaigefei@gmail.com
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 3rem; padding: 2rem; background: rgba(52, 152, 219, 0.05); border-radius: 10px;">
+                                <p style="color: #b0b0b0;">
+                                    欢迎通过邮件与我交流，我会尽快回复您的消息。
+                                </p>
+                            </div>
+                        </div>
+                    `
+                }
+            };
+
+            // 添加模态框样式
+            const style = document.createElement('style');
+            style.textContent = `
+                .modal {
+                    display: none;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 1001;
+                }
+
+                .modal-content {
+                    position: relative;
+                    background: #2c2c2c;
+                    width: 90%;
+                    max-width: 800px;
+                    margin: 50px auto;
+                    padding: 2rem;
+                    border-radius: 15px;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    color: #e1e1e1;
+                }
+
+                .modal h2 {
+                    color: #3498db;
+                    margin-bottom: 1rem;
+                }
+
+                .modal-close {
+                    position: absolute;
+                    top: 1rem;
+                    right: 1rem;
+                    background: none;
+                    border: none;
+                    color: #e1e1e1;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    padding: 0.5rem;
+                }
+
+                .modal-close:hover {
+                    color: #3498db;
+                }
+
+                .modal ul {
+                    margin-left: 2rem;
+                    margin-bottom: 1rem;
+                }
+
+                .modal p {
+                    margin-bottom: 1rem;
+                    line-height: 1.6;
+                }
+            `;
+            document.head.appendChild(style);
+
+            // 创建模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <button class="modal-close">&times;</button>
+                    <h2></h2>
+                    <div class="modal-body"></div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // 添加点击事件处理
+            document.querySelectorAll('.read-more').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const articleId = this.getAttribute('href').replace('#', '');
+                    if (articles[articleId]) {
+                        showArticle(articleId);
+                    }
+                });
+            });
+
+            // 关闭按钮事件
+            modal.querySelector('.modal-close').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            // 点击模态框外部关闭
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            function showArticle(articleId) {
+                const article = articles[articleId];
+                const modalTitle = modal.querySelector('h2');
+                const modalBody = modal.querySelector('.modal-body');
+                
+                modalTitle.textContent = article.title;
+                modalBody.innerHTML = article.content;
+                modal.style.display = 'block';
+            }
+
+            // 确保所有导航链接都能触发模态框
+            document.querySelector('.about-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                showArticle('about');
+            });
+
+            document.querySelector('.contact-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                showArticle('contact');
+            });
+
+            // 为页脚的导航链接添加事件监听器
+            document.querySelectorAll('.footer-nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const linkType = this.classList.contains('about-link') ? 'about' : 
+                                   this.classList.contains('contact-link') ? 'contact' : 'home';
+                    
+                    if (linkType === 'home') {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (articles[linkType]) {
+                        showArticle(linkType);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
